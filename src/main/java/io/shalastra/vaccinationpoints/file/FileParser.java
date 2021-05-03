@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.shalastra.vaccinationpoints.model.Point;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,10 +22,12 @@ public class FileParser {
     private static final String FILE_NAME = "file.json";
 
     private final ObjectMapper objectMapper;
+    private final ResourceLoader resourceLoader;
 
     @Autowired
-    public FileParser(ObjectMapper objectMapper) {
+    public FileParser(ObjectMapper objectMapper, ResourceLoader resourceLoader) {
         this.objectMapper = objectMapper;
+        this.resourceLoader = resourceLoader;
     }
 
     public List<Point> ingestData() {
@@ -33,7 +37,8 @@ public class FileParser {
     private Function<String, Optional<String>> read() {
         return fileName -> {
             try {
-                return Optional.of(Files.readString(Paths.get(fileName)));
+                var resource = resourceLoader.getResource(fileName);
+                return Optional.of(Files.readString(resource.getFile().toPath()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
