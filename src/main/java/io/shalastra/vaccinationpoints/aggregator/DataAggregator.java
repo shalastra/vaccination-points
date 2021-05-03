@@ -1,4 +1,4 @@
-package io.shalastra.vaccinationpoints;
+package io.shalastra.vaccinationpoints.aggregator;
 
 import io.shalastra.vaccinationpoints.model.County;
 import io.shalastra.vaccinationpoints.model.Point;
@@ -20,7 +20,7 @@ public class DataAggregator {
                 .collect(groupingBy(Point::voivodeship, groupingBy(Point::county, counting())));
     }
 
-    public static Map<String, String> pairCountyAndTerc(List<Point> points) {
+    public static Map<String, String> getCountyAndTerc(List<Point> points) {
         return points
                 .stream()
                 .map(point -> new County(point.county(), point.terc().substring(0, 4) + "000"))
@@ -30,7 +30,10 @@ public class DataAggregator {
 
     public static List<Result> aggregate(Map<String, Map<String, Long>> pointsByVoivodeshipAndCounty, Map<String,
             String> counties) {
-        return pointsByVoivodeshipAndCounty.entrySet().stream().map(entry -> getResults(counties, entry))
+        return pointsByVoivodeshipAndCounty
+                .entrySet()
+                .stream()
+                .map(entry -> getResults(counties, entry))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }

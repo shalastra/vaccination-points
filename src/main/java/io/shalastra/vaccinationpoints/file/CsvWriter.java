@@ -1,4 +1,4 @@
-package io.shalastra.vaccinationpoints;
+package io.shalastra.vaccinationpoints.file;
 
 import io.shalastra.vaccinationpoints.model.Result;
 import org.springframework.stereotype.Service;
